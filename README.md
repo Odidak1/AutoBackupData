@@ -17,7 +17,7 @@ Skrip ini digunakan untuk membackup folder di direktori lokal ke Google Drive me
    Ubah izin file agar skrip dapat dijalankan:
    `chmod +x /root/BackupData.sh`
 ### 6. **Jalankan Skrip**
-   Jalankab skrip dengan mengetik command:
+   Jalankan skrip dengan mengetik command:
    `bash /root/BackupData.sh`
 ### 7. **Setup Crontab**
    Ketik `crontab -e` lalu masukan kode:
