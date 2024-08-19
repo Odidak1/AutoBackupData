@@ -18,6 +18,6 @@ Skrip ini digunakan untuk membackup folder di direktori lokal ke Google Drive me
 6. **Jalankan Skrip**
    Jalankab skrip dengan mengetik command:
    `bash /root/BackupData.sh`
-7, **Setup Crontab**
+7. **Setup Crontab**
    Ketik `crontab -e` lalu masukan kode:
    `0 0 * * * bash /root/BackupData.sh`
