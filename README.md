@@ -3,7 +3,6 @@
 Skrip ini digunakan untuk membackup folder di direktori lokal ke Google Drive menggunakan rclone dan mengirimkan notifikasi status ke Discord melalui webhook. Berikut adalah petunjuk untuk menginstal dan menjalankan skrip ini.
 ![Screenshot](Screenshot_20240819-200133.png)
 
-## Instalasi
 ### 1. **Upload Skrip**
    Upload skrip BackupData.sh di folder root server/vps Anda.
 ### 2. **Instalasi Dependensi**
