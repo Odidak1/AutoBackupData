@@ -9,7 +9,7 @@ Skrip ini digunakan untuk membackup folder di direktori lokal ke Google Drive me
    Install dependensi yabg dibutuhkan skrip ini di server/vps anda dengan mengetik:
   `sudo apt-get install curl tar rclone`
 ### 3. **Setup Rclone**
-   Anda harus setup rclone di server/vps dan di komputer/hp anda
+   Anda harus mengonfigurasi rclone di server/VPS Anda. Ikuti panduan [rclone configuration](https://rclone.org/docs/) untuk menyiapkan remote dengan nama yang sesuai dengan konfigurasi.
 ### 4. **Ubah Konfigurasi**
    Edit konfigurasi skrip BackupData.sh untuk menyesuaikan konfigurasi
 ### 5. **Beri Izin Eksekusi**
@@ -19,5 +19,5 @@ Skrip ini digunakan untuk membackup folder di direktori lokal ke Google Drive me
    Jalankan skrip dengan mengetik command:
    `bash /root/BackupData.sh`
 ### 7. **Setup Crontab**
-   Ketik `crontab -e` lalu masukan kode:
+   Untuk menjalankan skrip secara otomatis, ketik `crontab -e` lalu masukkan baris berikut:
    `0 0,12 * * * bash /root/BackupData.sh`
