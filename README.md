@@ -2,13 +2,13 @@
 ## Panduan Instalasi Skrip BackupData
 
 Skrip ini digunakan untuk membackup folder di direktori lokal ke Google Drive menggunakan rclone dan mengirimkan notifikasi status ke Discord melalui webhook. Berikut adalah petunjuk untuk menginstal dan menjalankan skrip ini.
-![Screenshot](Screenshot_20240819-200133.png)
+![Screenshot](Screenshot_20240821-215423.png)
 
 ### 1. **Upload Skrip**
    Upload skrip BackupData.sh di folder root server/vps Anda.
 ### 2. **Instalasi Dependensi**
    Install dependensi yabg dibutuhkan skrip ini di server/vps anda dengan mengetik:
-  `sudo apt-get install curl tar rclone`
+  `sudo apt-get install curl tar rclone bc -y`
 ### 3. **Setup Rclone**
    Anda harus mengonfigurasi rclone di server/VPS Anda. Ikuti panduan [rclone configuration](https://rclone.org/docs/) untuk menyiapkan remote dengan nama yang sesuai dengan konfigurasi.
 ### 4. **Ubah Konfigurasi**
