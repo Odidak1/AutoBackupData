@@ -1,4 +1,4 @@
-# AutoBackupData V1.1
+# AutoBackupData V1.5
 ## Panduan Instalasi Skrip BackupData
 
 Skrip ini digunakan untuk membackup folder di direktori lokal ke Google Drive menggunakan rclone dan mengirimkan notifikasi status ke Discord melalui webhook. Berikut adalah petunjuk untuk menginstal dan menjalankan skrip ini.
