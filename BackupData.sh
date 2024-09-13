@@ -10,7 +10,7 @@ RCLONE_REMOTE_NAME="NamaRemote"
 # Nama folder di cloud gdrive
 GDRIVE_DIR="SistemBackup/BackupData"
 
-# URL Discord webhook
+# URL Discord webhook (jika kosong atau tidak valid, webhook tidak akan digunakan)
 WEBHOOK_URL=""
 
 # Konfigurasi Embed Discord
@@ -24,8 +24,11 @@ COLOR_STATUS=3066993
 # Konfigurasi Format ukuran
 SIZE_FORMAT="MB" # Bisa diubah ke KB, MB, GB
 
+# Konfigurasi Format Backup
+BACKUP_FORMAT="tar.gz" # Pilih antara "zip", "tar.gz", atau "tgz"
+
 # Konfigurasi Direktori/Folder
-BASE_DIR="/Folder/Yang/Dibackup" # Direktori dasar yang berisi subfolder untuk dibackup, jika untuk PTERODACTYL gunakan /var/lib/pterodactyl/volumes
+BASE_DIR="/Folder/Yang/Dibackup" # Direktori dasar yang berisi subfolder untuk dibackup
 EXCLUDE_FOLDERS=("Contoh1") # Folder yang dilewat
 
 
@@ -44,19 +47,21 @@ if ! rclone lsf "$RCLONE_REMOTE_NAME:$GDRIVE_DIR" | grep -q "$DATE_DIR"; then
   fi
 fi
 
-curl -H "Content-Type: application/json" \
-     -X POST \
-     -d "{
-           \"embeds\": [
-             {
-               \"title\": \"$TITLE_START\",
-               \"description\": \"**[⚒️] | Status :** $DESCRIPTION_START\",
-               \"color\": $COLOR_START
-             }
-           ]
-         }" \
-     "$WEBHOOK_URL"
-     
+if [[ -n "$WEBHOOK_URL" ]]; then
+  curl -H "Content-Type: application/json" \
+       -X POST \
+       -d "{
+             \"embeds\": [
+               {
+                 \"title\": \"$TITLE_START\",
+                 \"description\": \"**[⚒️] | Status :** $DESCRIPTION_START\",
+                 \"color\": $COLOR_START
+               }
+             ]
+           }" \
+       "$WEBHOOK_URL"
+fi
+
 is_excluded() {
   local folder_name="$1"
   for excluded in "${EXCLUDE_FOLDERS[@]}"; do
@@ -86,6 +91,27 @@ convert_size() {
   esac
 }
 
+backup_folder() {
+  local folder="$1"
+  local backup_file="$2"
+
+  case "$BACKUP_FORMAT" in
+    zip)
+      zip -r "$backup_file" "$folder"
+      ;;
+    tar.gz)
+      tar -czf "$backup_file" "$folder"
+      ;;
+    tgz)
+      tar -czf "$backup_file" "$folder"
+      ;;
+    *)
+      echo "Format backup tidak valid!"
+      return 1
+      ;;
+  esac
+}
+
 SUCCESS_COUNT=0
 FAIL_COUNT=0
 FAILED_FOLDERS=""
@@ -100,13 +126,13 @@ for folder in "$BASE_DIR"/*; do
       continue
     fi
 
-    BACKUP_FILE="$TEMP_DIR/${FOLDER_NAME}.tar.gz"
+    BACKUP_FILE="$TEMP_DIR/${FOLDER_NAME}.$BACKUP_FORMAT"
 
-    if tar -czf "$BACKUP_FILE" -C / "$folder"; then
+    if backup_folder "$folder" "$BACKUP_FILE"; then
       FILE_SIZE=$(stat -c%s "$BACKUP_FILE")
       TOTAL_SIZE=$((TOTAL_SIZE + FILE_SIZE))
 
-      if rclone copy "$BACKUP_FILE" "$RCLONE_REMOTE_NAME:$GDRIVE_DATE_DIR/${FOLDER_NAME}.tar.gz" --progress --transfers=4 --checkers=8; then
+      if rclone copy "$BACKUP_FILE" "$RCLONE_REMOTE_NAME:$GDRIVE_DATE_DIR/${FOLDER_NAME}.$BACKUP_FORMAT" --progress --transfers=4 --checkers=8; then
         rm "$BACKUP_FILE"
         SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
       else
@@ -128,17 +154,19 @@ fi
 
 TOTAL_SIZE_FORMATTED=$(convert_size "$TOTAL_SIZE")
 
-curl -H "Content-Type: application/json" \
-     -X POST \
-     -d "{
-           \"embeds\": [
-             {
-               \"title\": \"$TITLE_STATUS\",
-               \"description\": \"**[✅] | Status :** $DESCRIPTION_STATUS\\n**[📋] | Berhasil:** $SUCCESS_COUNT\\n**[📋] | Gagal:** $FAIL_COUNT\\n**[📊] | Total Size:** ${TOTAL_SIZE_FORMATTED} $SIZE_FORMAT\\n**[📂] | Folder Gagal:** $FAILED_FOLDERS\",
-               \"color\": $COLOR_STATUS
-             }
-           ]
-         }" \
-     "$WEBHOOK_URL"
+if [[ -n "$WEBHOOK_URL" ]]; then
+  curl -H "Content-Type: application/json" \
+       -X POST \
+       -d "{
+             \"embeds\": [
+               {
+                 \"title\": \"$TITLE_STATUS\",
+                 \"description\": \"**[✅] | Status :** $DESCRIPTION_STATUS\\n**[📋] | Berhasil:** $SUCCESS_COUNT\\n**[📋] | Gagal:** $FAIL_COUNT\\n**[📊] | Total Size:** ${TOTAL_SIZE_FORMATTED} $SIZE_FORMAT\\n**[📂] | Folder Gagal:** $FAILED_FOLDERS\",
+                 \"color\": $COLOR_STATUS
+               }
+             ]
+           }" \
+       "$WEBHOOK_URL"
+fi
 
 rm -r "$TEMP_DIR"
