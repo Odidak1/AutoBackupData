@@ -1,4 +1,3 @@
-```md
 # AutoBackupData V1.7
 
 AutoBackupData adalah skrip bash yang digunakan untuk melakukan backup folder dari server lokal ke Google Drive menggunakan [Rclone](https://rclone.org/). Selain itu, skrip ini juga mengirimkan notifikasi status backup ke Discord melalui webhook.
