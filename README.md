@@ -76,4 +76,3 @@ AutoBackupData adalah skrip bash yang digunakan untuk melakukan backup folder da
 ## Screenshot
 
 ![Screenshot](Screenshot_20240821-215423.png)
-```
